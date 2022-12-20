@@ -6,10 +6,7 @@ ___
 ### Features
 - [x] Database karyawan: Simpan dan kelola semua informasi karyawan Anda di satu tempat yang nyaman, termasuk personal data, pekerjaan, informasi gaji, dan lainnya.
 - [ ] Permintaan Cuti: Sederhanakan proses permintaan dan persetujuan libur dengan sistem online yang intuitif.
-- [ ]  penggajian: Catat dan kelola semua informasi gaji karyawan, termasuk upah, potongan, dan pembayaran lainnya.
-- [ ] Share your location to friends
-- [ ] Push notification
-
+- [ ] Penggajian: Catat dan kelola semua informasi gaji karyawan, termasuk upah, potongan, dan pembayaran lainnya.
 ----
 License
 ----
