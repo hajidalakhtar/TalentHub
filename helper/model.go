@@ -159,3 +159,25 @@ func ToUserResponse(user entity.User) model.UserResponse {
 	}
 	return userResponse
 }
+
+func ToAttendanceResponse(attendance entity.Attendance) model.AttendanceResponse {
+	attendanceResponse := model.AttendanceResponse{
+		Date:         attendance.Date,
+		CheckIn:      attendance.CheckIn,
+		CheckOut:     attendance.CheckOut,
+		Shift:        attendance.Shift,
+		OverTime:     attendance.OverTime,
+		Status:       attendance.Status,
+		EmployeeName: attendance.Employee.PersonalData.FirstName + " " + attendance.Employee.PersonalData.LastName,
+		BasicSalary:  attendance.Employee.SalaryData.BasicSalary,
+	}
+	return attendanceResponse
+}
+
+func ToAttendanceResponses(attendance []entity.Attendance) []model.AttendanceResponse {
+	var response []model.AttendanceResponse
+	for _, attendance := range attendance {
+		response = append(response, ToAttendanceResponse(attendance))
+	}
+	return response
+}

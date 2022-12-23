@@ -48,6 +48,6 @@ func Migration(db *gorm.DB) error {
 	db.Exec("CREATE TYPE jht_cost_options AS ENUM ('Company', 'Employee');")
 	db.Exec("CREATE TYPE jkk_options AS ENUM ('1 - 0.24%', '2 - 0.54%', '3 - 0.89%','4 - 1.27%','5 - 1.24%');")
 
-	err := db.AutoMigrate(&entity.PersonalData{}, &entity.EmploymentData{}, &entity.SalaryData{}, &entity.Allowance{}, &entity.Employee{}, &entity.User{}, &entity.Company{})
+	err := db.AutoMigrate(&entity.PersonalData{}, &entity.EmploymentData{}, &entity.SalaryData{}, &entity.Allowance{}, &entity.Employee{}, &entity.User{}, &entity.Company{}, &entity.Attendance{})
 	return err
 }
