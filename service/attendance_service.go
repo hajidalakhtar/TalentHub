@@ -13,3 +13,4 @@ type AttendanceService interface {
 	GetAttendanceByEmployeeIdAndDate(employeeId uint, date time.Time) model.AttendanceResponse
 	GetAttendanceByFilter(employeeId uint, date time.Time) []model.AttendanceResponse
 }
+                        

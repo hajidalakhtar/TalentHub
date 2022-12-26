@@ -5,11 +5,13 @@ import (
 	"TalentHub/controller"
 	"TalentHub/exception"
 	"TalentHub/repository"
+	"TalentHub/repository/seeder"
 	"TalentHub/service"
-	"flag"
-	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"log"
+	"os"
 )
 
 func main() {
@@ -17,14 +19,14 @@ func main() {
 	// Setup Configuration
 	configuration := config.New()
 	database := config.ConnectDB(configuration)
-	//err := config.Migration(database)
-	//exception.PanicIfNeeded(err)
-	//
-	//for _, seed := range seeder.All() {
-	//	if err := seed.Run(database); err != nil {
-	//		log.Fatalf("Running seed '%s', failed with error: %s", seed.Name, err)
-	//	}
-	//}
+	err := config.Migration(database)
+	exception.PanicIfNeeded(err)
+
+	for _, seed := range seeder.All() {
+		if err := seed.Run(database); err != nil {
+			log.Fatalf("Running seed '%s', failed with error: %s", seed.Name, err)
+		}
+	}
 
 	//// Setup Repository
 	employeeRepository := repository.NewEmployeeRepository()
@@ -47,6 +49,12 @@ func main() {
 	// Setup Fiber
 	app := fiber.New(config.NewFiberConfig())
 	app.Use(recover.New())
+	app.Use(cors.New(cors.Config{
+		AllowHeaders:     "Origin,Content-Type,Accept,Content-Length,Accept-Language,Accept-Encoding,Connection,Access-Control-Allow-Origin",
+		AllowOrigins:     "*",
+		AllowCredentials: true,
+		AllowMethods:     "GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS",
+	}))
 
 	// Setup Routing
 	employeeController.Route(app)
@@ -56,14 +64,14 @@ func main() {
 
 	// Start App
 
-	port := flag.Int("port", -1, "specify a port to use http rather than AWS Lambda")
-	flag.Parse()
-	portStr := ":" + configuration.Get("PORT")
-	if *port != -1 {
-		portStr = fmt.Sprintf(":%d", *port)
-		err := app.Listen(portStr)
-		exception.PanicIfNeeded(err)
-
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = ":3000"
+	} else {
+		port = ":" + port
 	}
+
+	err = app.Listen(port)
+	exception.PanicIfNeeded(err)
 
 }
