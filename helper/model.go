@@ -3,9 +3,24 @@ package helper
 import (
 	"TalentHub/entity"
 	"TalentHub/model"
+	"time"
 )
 
 func ToAllEmployeeModelFromRequest(request model.CreateEmployeeRequest) (entity.PersonalData, entity.EmploymentData, entity.SalaryData, entity.Allowance) {
+
+	dateFormatReference := "2006-01-02T15:04:05Z07:00"
+
+	BirthDateInDateFormat, err := time.Parse(dateFormatReference, request.BirthDate)
+	IdentityExpiryDateInDateFormat, err := time.Parse(dateFormatReference, request.IdentityExpiryDate)
+	JoinDateInDateFormat, err := time.Parse(dateFormatReference, request.JoinDate)
+	EndStatusDateInDateFormat, err := time.Parse(dateFormatReference, request.EndStatusDate)
+	TaxableDateInDateFormat, err := time.Parse(dateFormatReference, request.TaxableDate)
+	BPJSKetenagaKerjaDateInDateFormat, err := time.Parse(dateFormatReference, request.BPJSKetenagaKerjaDate)
+	BPJSKesehatanDateInDateFormat, err := time.Parse(dateFormatReference, request.BPJSKesehatanDate)
+	JaminanPensiunDateInDateFormat, err := time.Parse(dateFormatReference, request.JaminanPensiunDate)
+	if err != nil {
+		panic(err)
+	}
 
 	personalData := entity.PersonalData{
 		FirstName:          request.FirstName,
@@ -14,14 +29,14 @@ func ToAllEmployeeModelFromRequest(request model.CreateEmployeeRequest) (entity.
 		MobilePhone:        request.MobilePhone,
 		Phone:              request.Phone,
 		PlaceOfBirth:       request.PlaceOfBirth,
-		BirthDate:          request.BirthDate,
+		BirthDate:          BirthDateInDateFormat,
 		Gender:             request.Gender,
 		MaritalStatus:      request.MaritalStatus,
 		BloodType:          request.BloodType,
 		Religion:           request.Religion,
 		IdentityType:       request.IdentityType,
 		IdentityNumber:     request.IdentityNumber,
-		IdentityExpiryDate: request.IdentityExpiryDate,
+		IdentityExpiryDate: IdentityExpiryDateInDateFormat,
 		PostalCode:         request.PostalCode,
 		CitizenIdAddress:   request.CitizenIdAddress,
 		ResidenceAddress:   request.ResidenceAddress,
@@ -30,8 +45,8 @@ func ToAllEmployeeModelFromRequest(request model.CreateEmployeeRequest) (entity.
 	employmentData := entity.EmploymentData{
 		EmployeeNumber: request.EmployeeNumber,
 		EmployeeStatus: request.EmployeeStatus,
-		JoinDate:       request.JoinDate,
-		EndStatusDate:  request.EndStatusDate,
+		JoinDate:       JoinDateInDateFormat,
+		EndStatusDate:  EndStatusDateInDateFormat,
 		Branch:         request.Branch,
 		Organization:   request.Organization,
 		JobPosition:    request.JobPosition,
@@ -54,20 +69,20 @@ func ToAllEmployeeModelFromRequest(request model.CreateEmployeeRequest) (entity.
 		PTKPStatus:              request.PTKPStatus,
 		TaxMethod:               request.TaxMethod,
 		TaxSalary:               request.TaxSalary,
-		TaxableDate:             request.TaxableDate,
+		TaxableDate:             TaxableDateInDateFormat,
 		EmployeeTaxStatus:       request.EmployeeTaxStatus,
 		BeginningNetto:          request.BeginningNetto,
 		PHH21Paid:               request.PHH21Paid,
 		BPJSKetenagaKerjaNumber: request.BPJSKetenagaKerjaNumber,
 		NPPBPJSKetenagaKerja:    request.NPPBPJSKetenagaKerja,
-		BPJSKetenagaKerjaDate:   request.BPJSKetenagaKerjaDate,
+		BPJSKetenagaKerjaDate:   BPJSKetenagaKerjaDateInDateFormat,
 		BPJSKesehatanNumber:     request.BPJSKesehatanNumber,
 		BPJSKesehatanFamily:     request.BPJSKesehatanFamily,
-		BPJSKesehatanDate:       request.BPJSKesehatanDate,
+		BPJSKesehatanDate:       BPJSKesehatanDateInDateFormat,
 		BPJSKesehatanCost:       request.BPJSKesehatanCost,
 		JHTCost:                 request.JHTCost,
 		JaminanPensiunCost:      request.JaminanPensiunCost,
-		JaminanPensiunDate:      request.JaminanPensiunDate,
+		JaminanPensiunDate:      JaminanPensiunDateInDateFormat,
 	}
 
 	allowance := entity.Allowance{
