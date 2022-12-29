@@ -21,7 +21,7 @@ func NewUserController(userService service.UserService, middelware middleware.Mi
 
 func (controller *UserController) Route(app *fiber.App) {
 	app.Post("/api/user", controller.Middelware.Protected(), controller.CreateUser)
-	app.Post("/api/user/login", controller.Middelware.Protected(), controller.Login)
+	app.Post("/api/user/login", controller.Login)
 	app.Get("/api/user/:user_id", controller.Middelware.Protected(), controller.GetUserById)
 }
 
