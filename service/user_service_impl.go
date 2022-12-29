@@ -44,7 +44,7 @@ func (service *UserServiceImpl) Login(email string, password string) (model.Logi
 		}
 	}
 
-	signedToken := createToken(user, service.Configuration.Get("JWT_SECRET"))
+	signedToken := createToken(user, service.Configuration.Get("JWT_KEY"))
 
 	loginResponse := helper.ToLoginResponse(user, signedToken)
 	return loginResponse, isLoginSuccess
@@ -62,7 +62,7 @@ func createToken(user entity.User, jwtKey string) string {
 	claims := model.MyClaims{
 		StandardClaims: jwt.StandardClaims{
 			Issuer:    "TalentHub",
-			ExpiresAt: time.Now().Add(2).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 12).Unix(),
 		},
 		Username: user.Username,
 		Email:    user.Email,
