@@ -10,19 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	"os"
 )
-
-func getPort() string {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = ":3000"
-	} else {
-		port = ":" + port
-	}
-
-	return port
-}
 
 func main() {
 
@@ -76,7 +64,13 @@ func main() {
 
 	// Start App
 
-	err := app.Listen(getPort())
+	port := configuration.Get("PORT")
+	if port == "" {
+		port = ":3000"
+	} else {
+		port = ":" + port
+	}
+	err := app.Listen(port)
 	exception.PanicIfNeeded(err)
 
 }
