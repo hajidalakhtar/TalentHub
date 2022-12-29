@@ -44,7 +44,7 @@ func (service *UserServiceImpl) Login(email string, password string) (model.Logi
 		}
 	}
 
-	signedToken := createToken(user, service.Configuration.Get("JWT_KEY"))
+	signedToken := createToken(user, service.Configuration.JwtKey())
 
 	loginResponse := helper.ToLoginResponse(user, signedToken)
 	return loginResponse, isLoginSuccess
@@ -58,7 +58,7 @@ func (service *UserServiceImpl) FindUserById(id uint) model.UserResponse {
 	return userResponse
 }
 
-func createToken(user entity.User, jwtKey string) string {
+func createToken(user entity.User, jwtKey []byte) string {
 	claims := model.MyClaims{
 		StandardClaims: jwt.StandardClaims{
 			Issuer:    "TalentHub",
@@ -73,7 +73,7 @@ func createToken(user entity.User, jwtKey string) string {
 		claims,
 	)
 
-	signedToken, err := token.SignedString([]byte(jwtKey))
+	signedToken, err := token.SignedString(jwtKey)
 
 	if err != nil {
 		panic(err)

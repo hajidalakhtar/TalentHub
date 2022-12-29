@@ -15,8 +15,9 @@ func NewMiddelware(configuration config.Config) Middelware {
 }
 
 func (middleware *Middelware) Protected() func(*fiber.Ctx) error {
+
 	return jwtware.New(jwtware.Config{
-		SigningKey:   []byte(middleware.configuration.Get("JWT_SECRET")),
+		SigningKey:   middleware.configuration.JwtKey(),
 		ErrorHandler: jwtError,
 	})
 
