@@ -13,6 +13,17 @@ import (
 	"os"
 )
 
+func getPort() string {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = ":3000"
+	} else {
+		port = ":" + port
+	}
+
+	return port
+}
+
 func main() {
 
 	// Setup Configuration
@@ -64,14 +75,8 @@ func main() {
 	attendanceController.Route(app)
 
 	// Start App
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = ":7819"
-	} else {
-		port = ":" + port
-	}
 
-	err := app.Listen(port)
+	err := app.Listen(getPort())
 	exception.PanicIfNeeded(err)
 
 }
