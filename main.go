@@ -27,7 +27,7 @@ func getPort() string {
 func main() {
 
 	// Setup Configuration
-	configuration := config.New()
+	configuration := config.New(".env")
 	database := config.ConnectDB(configuration)
 	middelware := middleware.NewMiddelware(configuration)
 	//middleware := mi
