@@ -17,7 +17,7 @@ func ToAllEmployeeModelFromRequest(request model.CreateEmployeeRequest) (entity.
 	TaxableDateInDateFormat, err := time.Parse(dateFormatReference, request.TaxableDate)
 	BPJSKetenagaKerjaDateInDateFormat, err := time.Parse(dateFormatReference, request.BPJSKetenagaKerjaDate)
 	BPJSKesehatanDateInDateFormat, err := time.Parse(dateFormatReference, request.BPJSKesehatanDate)
-	JaminanPensiunDateInDateFormat, err := time.Parse(dateFormatReference, request.JaminanPensiunDate+"Z")
+	JaminanPensiunDateInDateFormat, err := time.Parse(dateFormatReference, request.JaminanPensiunDate+":05Z")
 
 	if err != nil {
 		panic(err)
