@@ -3,6 +3,7 @@ package controller
 import (
 	"TalentHub/entity"
 	"TalentHub/exception"
+	"TalentHub/middleware"
 	"TalentHub/model"
 	"TalentHub/service"
 	"github.com/gofiber/fiber/v2"
@@ -11,16 +12,17 @@ import (
 
 type UserController struct {
 	UserService service.UserService
+	Middelware  middleware.Middelware
 }
 
-func NewUserController(userService service.UserService) *UserController {
-	return &UserController{UserService: userService}
+func NewUserController(userService service.UserService, middelware middleware.Middelware) *UserController {
+	return &UserController{UserService: userService, Middelware: middelware}
 }
 
 func (controller *UserController) Route(app *fiber.App) {
-	app.Post("/api/user", controller.CreateUser)
-	app.Post("/api/user/login", controller.Login)
-	app.Get("/api/user/:user_id", controller.GetUserById)
+	app.Post("/api/user", controller.Middelware.Protected(), controller.CreateUser)
+	app.Post("/api/user/login", controller.Middelware.Protected(), controller.Login)
+	app.Get("/api/user/:user_id", controller.Middelware.Protected(), controller.GetUserById)
 }
 
 func (controller *UserController) CreateUser(c *fiber.Ctx) error {

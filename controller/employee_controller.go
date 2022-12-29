@@ -2,6 +2,7 @@ package controller
 
 import (
 	"TalentHub/exception"
+	"TalentHub/middleware"
 	"TalentHub/model"
 	"TalentHub/service"
 	"github.com/gofiber/fiber/v2"
@@ -10,15 +11,16 @@ import (
 
 type EmployeeController struct {
 	EmployeeService service.EmployeeService
+	Middelware      middleware.Middelware
 }
 
-func NewEmployeeController(employeeService *service.EmployeeService) EmployeeController {
-	return EmployeeController{EmployeeService: *employeeService}
+func NewEmployeeController(employeeService *service.EmployeeService, middelware middleware.Middelware) EmployeeController {
+	return EmployeeController{EmployeeService: *employeeService, Middelware: middelware}
 }
 
 func (controller *EmployeeController) Route(app *fiber.App) {
-	app.Post("/api/employee/:company_id", controller.CreateEmployee)
-	app.Get("/api/employee/:company_id", controller.GetEmployeeByCompany)
+	app.Post("/api/employee/:company_id", controller.Middelware.Protected(), controller.CreateEmployee)
+	app.Get("/api/employee/:company_id", controller.Middelware.Protected(), controller.GetEmployeeByCompany)
 
 }
 

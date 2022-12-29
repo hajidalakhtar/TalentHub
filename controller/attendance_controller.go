@@ -3,6 +3,7 @@ package controller
 import (
 	"TalentHub/entity"
 	"TalentHub/exception"
+	"TalentHub/middleware"
 	"TalentHub/model"
 	"TalentHub/service"
 	"github.com/gofiber/fiber/v2"
@@ -11,20 +12,22 @@ import (
 
 type AttendanceController struct {
 	AttendanceService service.AttendanceService
+	Middelware        middleware.Middelware
 }
 
-func NewAttendanceController(attendanceService *service.AttendanceService) AttendanceController {
+func NewAttendanceController(attendanceService *service.AttendanceService, middelware middleware.Middelware) AttendanceController {
 	return AttendanceController{
 		AttendanceService: *attendanceService,
+		Middelware:        middelware,
 	}
 }
 
 func (controller *AttendanceController) Route(app *fiber.App) {
-	app.Post("/api/attendance", controller.CreateAttendance)
-	app.Get("/api/attendance/employee/:employee_id", controller.GetAttendanceByEmployeeId)
-	app.Get("/api/attendance/date/:date", controller.GetAttendanceByDate)
-	app.Get("/api/attendance/employee/:employee_id/date/:date", controller.GetAttendanceByEmployeeIdAndDate)
-	app.Get("/api/attendance/filter", controller.GetAttendanceByFilter)
+	app.Post("/api/attendance", controller.Middelware.Protected(), controller.CreateAttendance)
+	app.Get("/api/attendance/employee/:employee_id", controller.Middelware.Protected(), controller.GetAttendanceByEmployeeId)
+	app.Get("/api/attendance/date/:date", controller.Middelware.Protected(), controller.GetAttendanceByDate)
+	app.Get("/api/attendance/employee/:employee_id/date/:date", controller.Middelware.Protected(), controller.GetAttendanceByEmployeeIdAndDate)
+	app.Get("/api/attendance/filter", controller.Middelware.Protected(), controller.GetAttendanceByFilter)
 }
 
 func (controller *AttendanceController) CreateAttendance(c *fiber.Ctx) error {

@@ -160,6 +160,16 @@ func ToUserResponse(user entity.User) model.UserResponse {
 	return userResponse
 }
 
+func ToLoginResponse(user entity.User, token string) model.LoginResponse {
+	loginResponse := model.LoginResponse{
+		Id:       user.ID,
+		Username: user.Username,
+		Email:    user.Email,
+		Token:    token,
+	}
+	return loginResponse
+}
+
 func ToAttendanceResponse(attendance entity.Attendance) model.AttendanceResponse {
 	attendanceResponse := model.AttendanceResponse{
 		Date:         attendance.Date,

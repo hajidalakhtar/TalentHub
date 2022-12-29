@@ -1,21 +1,25 @@
 package service
 
 import (
+	"TalentHub/config"
 	"TalentHub/entity"
 	"TalentHub/exception"
 	"TalentHub/helper"
 	"TalentHub/model"
 	"TalentHub/repository"
+	"github.com/golang-jwt/jwt/v4"
 	"gorm.io/gorm"
+	"time"
 )
 
 type UserServiceImpl struct {
 	DB             *gorm.DB
 	UserRepository repository.UserRepository
+	Configuration  config.Config
 }
 
-func NewUserService(db *gorm.DB, userRepository *repository.UserRepository) UserService {
-	return &UserServiceImpl{DB: db, UserRepository: *userRepository}
+func NewUserService(db *gorm.DB, userRepository *repository.UserRepository, appConfiguration config.Config) UserService {
+	return &UserServiceImpl{DB: db, UserRepository: *userRepository, Configuration: appConfiguration}
 }
 
 func (service *UserServiceImpl) CreateUser(user entity.User) model.UserResponse {
@@ -28,7 +32,7 @@ func (service *UserServiceImpl) CreateUser(user entity.User) model.UserResponse 
 	return userResponse
 }
 
-func (service *UserServiceImpl) Login(email string, password string) (model.UserResponse, bool) {
+func (service *UserServiceImpl) Login(email string, password string) (model.LoginResponse, bool) {
 	db := service.DB
 	user, err := service.UserRepository.FindUserByEmail(db, email)
 	isLoginSuccess := false
@@ -40,8 +44,10 @@ func (service *UserServiceImpl) Login(email string, password string) (model.User
 		}
 	}
 
-	userResponse := helper.ToUserResponse(user)
-	return userResponse, isLoginSuccess
+	signedToken := createToken(user, service.Configuration.Get("JWT_SECRET"))
+
+	loginResponse := helper.ToLoginResponse(user, signedToken)
+	return loginResponse, isLoginSuccess
 }
 
 func (service *UserServiceImpl) FindUserById(id uint) model.UserResponse {
@@ -50,4 +56,28 @@ func (service *UserServiceImpl) FindUserById(id uint) model.UserResponse {
 	exception.PanicIfNeeded(err)
 	userResponse := helper.ToUserResponse(user)
 	return userResponse
+}
+
+func createToken(user entity.User, jwtKey string) string {
+	claims := model.MyClaims{
+		StandardClaims: jwt.StandardClaims{
+			Issuer:    "TalentHub",
+			ExpiresAt: time.Now().Add(2).Unix(),
+		},
+		Username: user.Username,
+		Email:    user.Email,
+	}
+
+	token := jwt.NewWithClaims(
+		jwt.SigningMethodHS256,
+		claims,
+	)
+
+	signedToken, err := token.SignedString([]byte(jwtKey))
+
+	if err != nil {
+		panic(err)
+	}
+	return signedToken
+
 }
