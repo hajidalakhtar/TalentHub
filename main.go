@@ -14,8 +14,8 @@ import (
 
 func main() {
 
-	// Setup Configuration
-	configuration := config.New(".env")
+	// Setup Configurations
+	configuration := config.New()
 	database := config.ConnectDB(configuration)
 	middelware := middleware.NewMiddelware(configuration)
 	//middleware := mi
